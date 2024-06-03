@@ -24,7 +24,9 @@ router.post('/products', async(req,res)=>{
 //show particular product
 router.get('/products/:id', async (req,res)=>{
     let {id} = req.params;
-    let foundProduct = await Product.findById(id);
+    // let foundProduct = await Product.findById(id);
+    let foundProduct = await Product.findById(id).populate('reviews');
+    console.log(foundProduct);
     res.render('show',{foundProduct});
 })
 
@@ -43,12 +45,9 @@ router.patch('/products/:id', async(req,res)=>{
     res.redirect('/products')
 })
 
-router.delete('/products/:id', (req,res)=>{
+router.delete('/products/:id', async (req,res)=>{
     let {id} = req.params;
-    let newProducts = products.filter((product)=> {return product.id != id});
-    products = newProducts;
-    // this filter stores all the true values and removes falsy values
-
+    await Product.findByIdAndDelete(id);
     res.redirect('/products');
 })
 

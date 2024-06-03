@@ -4,7 +4,8 @@ const path = require("path");
 const mongoose = require('mongoose');
 const seedDB = require('./seed');
 const productRoutes = require("./routes/product");
-const methodOverride=require('method-override')
+const methodOverride=require('method-override');
+const reviewRoutes = require("./routes/review")
 
 mongoose.connect('mongodb://127.0.0.1:27017/ecomm') //returns a promise
 .then(()=>{console.log("DB connected")})
@@ -21,6 +22,7 @@ app.use(express.json());
 
 app.use(methodOverride('_method'))
 app.use(productRoutes);
+app.use(reviewRoutes);
 // seedDB(); //run only once
 
 
