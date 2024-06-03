@@ -26,7 +26,7 @@ router.get('/products/:id', async (req,res)=>{
     let {id} = req.params;
     // let foundProduct = await Product.findById(id);
     let foundProduct = await Product.findById(id).populate('reviews');
-    console.log(foundProduct);
+    // console.log(foundProduct);
     res.render('show',{foundProduct});
 })
 
@@ -47,6 +47,10 @@ router.patch('/products/:id', async(req,res)=>{
 
 router.delete('/products/:id', async (req,res)=>{
     let {id} = req.params;
+    let foundProduct = await Product.findById(id);
+    for(let ids of foundProduct.reviews) {
+        await Review.findByIdAndDelete(ids);
+    }
     await Product.findByIdAndDelete(id);
     res.redirect('/products');
 })
