@@ -32,15 +32,16 @@ let configSession = {
     // cookie: { secure: true } //http -> https
 }
 
+
+app.use(session(configSession)); //session middleware
+app.use(flash()); //flash middleware
+
 app.use((req,res,next)=>{
     res.locals.success = req.flash('success');
     res.locals.error =  req.flash('error');
     next();
 
 })
-
-app.use(session(configSession)); //session middleware
-app.use(flash()); //flash middleware
 
 //Routes
 app.use(productRoutes);

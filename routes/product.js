@@ -1,5 +1,6 @@
 const express=  require("express");
 const Product = require('../models/Product');
+const Review = require('../models/Review');
 const {validateProduct} = require('../middleware');
 //mini application
 const router = express.Router(); //same work as app
@@ -94,6 +95,7 @@ router.delete('/products/:id', async (req,res)=>{
             await Review.findByIdAndDelete(ids);
         }
         await Product.findByIdAndDelete(id);
+        req.flash('success', 'Product Deleted Successfully');
         res.redirect('/products');
     }
 
