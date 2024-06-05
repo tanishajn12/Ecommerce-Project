@@ -34,6 +34,7 @@ router.post('/products', validateProduct, async(req,res)=>{
     try{
         let {name, img, price, desc} = req.body; //by default undefined
         await Product.create({name, img, price, desc}); //automatically save in db as well
+        req.flash('success', 'Product Added Successfully');
         res.redirect('/products');
     }
     catch(e) {
@@ -48,7 +49,7 @@ router.get('/products/:id', async (req,res)=>{
         // let foundProduct = await Product.findById(id);
         let foundProduct = await Product.findById(id).populate('reviews');
         // console.log(foundProduct);
-        res.render('show',{foundProduct, msg:req.flash('msg')});
+        res.render('show',{foundProduct, success:req.flash('msg')});
     }
 
     catch(e) {
@@ -75,6 +76,7 @@ router.patch('/products/:id', validateProduct ,async(req,res)=>{
         let {id} = req.params;
         let {name, img, price, desc} = req.body;
         await Product.findByIdAndUpdate(id, {name, img, price, desc});
+        req.flash('success', 'Product Edited Successfully');
         res.redirect('/products')
     }
 

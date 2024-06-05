@@ -17,6 +17,7 @@ app.set("view engine",'ejs')
 app.set('views', path.join(__dirname,'views'))
 
 app.use(express.static(path.join(__dirname,'public')));
+
 // For parsing application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 // For parsing application/json
@@ -30,17 +31,22 @@ let configSession = {
     saveUninitialized: false,
     // cookie: { secure: true } //http -> https
 }
-app.use(session(configSession)); //session middleware
-//flash middleware
-app.use(flash());
 
+app.use((req,res,next)=>{
+    res.locals.success = req.flash('success');
+    res.locals.error =  req.flash('error');
+    next();
+
+})
+
+app.use(session(configSession)); //session middleware
+app.use(flash()); //flash middleware
 
 //Routes
 app.use(productRoutes);
 app.use(reviewRoutes);
 
 // seedDB(); //run only once
-
 
 const PORT = 8080;
 app.listen(PORT,()=>{
