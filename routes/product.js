@@ -48,7 +48,7 @@ router.get('/products/:id', async (req,res)=>{
         // let foundProduct = await Product.findById(id);
         let foundProduct = await Product.findById(id).populate('reviews');
         // console.log(foundProduct);
-        res.render('show',{foundProduct});
+        res.render('show',{foundProduct, msg:req.flash('msg')});
     }
 
     catch(e) {
