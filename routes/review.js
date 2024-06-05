@@ -20,7 +20,7 @@ router.post('/products/:id/rating', async (req,res)=>{
 
 
         //adding flash message
-        req.flash('msg' , 'Review added successfully')
+        req.flash('msg' , 'Review added successfully');
         res.redirect(`/products/${id}`);
     }
 
