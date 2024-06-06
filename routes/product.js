@@ -9,7 +9,7 @@ const router = express.Router(); //same work as app
 router.get("/products", async (req,res)=> {
     try{
         let products = await Product.find({});
-        res.render("index",{products})
+        res.render("products/index",{products})
     }
 
     catch(e) {
@@ -20,7 +20,7 @@ router.get("/products", async (req,res)=> {
 //new form
 router.get("/product/new",(req,res)=>{
     try{
-        res.render('new.ejs'); 
+        res.render('products/new'); 
     }
 
     catch(e) {
@@ -50,7 +50,7 @@ router.get('/products/:id', async (req,res)=>{
         // let foundProduct = await Product.findById(id);
         let foundProduct = await Product.findById(id).populate('reviews');
         // console.log(foundProduct);
-        res.render('show',{foundProduct, success:req.flash('msg')});
+        res.render('products/show',{foundProduct, success:req.flash('msg')});
     }
 
     catch(e) {
@@ -63,7 +63,7 @@ router.get('/products/:id/edit',async (req,res)=> {
     try{
         let {id} = req.params;
         let foundProduct = await Product.findById(id);
-        res.render('edit',{foundProduct})
+        res.render('products/edit',{foundProduct})
     }
 
     catch(e) {
