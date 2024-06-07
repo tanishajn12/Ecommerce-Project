@@ -9,6 +9,9 @@ const flash = require("connect-flash");
 const reviewRoutes = require("./routes/review");
 const productRoutes = require("./routes/product");
 const authRoutes = require("./routes/auth");
+const passport= require('passport');
+const User = require("./models/User");
+const LocalStrategy = require('passport-local');
 
 mongoose.connect('mongodb://127.0.0.1:27017/ecomm') //returns a promise
 .then(()=>{console.log("DB connected")})
@@ -36,6 +39,17 @@ let configSession = {
 
 app.use(session(configSession)); //session middleware
 app.use(flash()); //flash middleware
+
+//authentication -> passport commands -> vvimp
+//make sure they are added after session
+//use static serialise and deserialize of model for passport session support
+app.use(passport.initialize());
+app.use(passport.session());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+//use static authenticate method of model in Local Strategy
+passport.use(new LocalStrategy(User.authenticate()));
 
 app.use((req,res,next)=>{
     res.locals.success = req.flash('success');
