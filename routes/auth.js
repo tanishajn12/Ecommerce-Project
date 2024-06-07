@@ -9,10 +9,11 @@ router.get('/register',(req,res)=>{
 })
 
 router.post('/register', async (req,res)=>{
-    let {username , password, email, gender} = req.body;
-    let user = new User({username, email, gender});
+    let {username , password, email, role, gender} = req.body;
+    let user = new User({username, email, gender, role});
     let newUser = await User.register(user, password);
-    res.send(newUser);
+    // res.send(newUser);
+    res.redirect('/login');
     
 })
 
@@ -27,7 +28,9 @@ router.post('/login',
         failureMessage: true 
     }),
     function(req, res) {
-        req.flash('success','Welcome Back')
+        //once i get logged in it already has an object req
+        // console.log( req.user, "User");
+        req.flash('success',`Welcome Back ${req.user.username}`);
         res.redirect('/products');
     }
 );
@@ -35,7 +38,7 @@ router.post('/login',
 
 router.get('/logout',(req,res)=>{
     req.logout(()=>{
-        req.flash('success', 'logged out successfully');
+        req.flash('success', 'Logged out successfully');
         res.redirect('/login');
     });
 })

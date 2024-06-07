@@ -33,7 +33,13 @@ let configSession = {
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: false,
-    // cookie: { secure: true } //http -> https
+    cookie: { 
+        secure: true ,//http -> https
+        HttpOnly : true,
+        //session should expire after 7 days  -> counted in millisecond
+        expires : Date.now() + 7*24*60*60*1000,
+        maxAge: 7*24*60*60*1000
+    } 
 }
 
 
@@ -51,11 +57,12 @@ passport.deserializeUser(User.deserializeUser());
 //use static authenticate method of model in Local Strategy
 passport.use(new LocalStrategy(User.authenticate()));
 
+
 app.use((req,res,next)=>{
+    res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error =  req.flash('error');
     next();
-
 })
 
 //Routes

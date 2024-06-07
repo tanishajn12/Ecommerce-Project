@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
     },
     role:{
         type:String,
-        default:'buyer'
+        default:'buyer',
     },
     gender:{
         type:String,

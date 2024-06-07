@@ -26,8 +26,12 @@
         
         </ul>
         <div class="d-flex" role="search">
-          <a href="/login" ><button class="btn btn-outline-info" type="submit">Login</button></a>
-          <a href="/logout" ><button class="btn btn-outline-info" type="submit">Logout</button></a>
+          <%if(!currentUser) {%>
+            <a href="/login" ><button class="btn btn-outline-info" type="submit">Login</button></a>
+            
+          <% }else{ %>
+            <a href="/logout" ><button class="btn btn-outline-info" type="submit">Logout</button></a>
+          <%} %>
 
         </div>
       </div>

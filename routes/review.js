@@ -2,9 +2,9 @@ const express = require("express")
 const router = express.Router();
 const Product = require("../models/Product");
 const Review = require("../models/Review");
-const {validateReview} = require('../middleware')
+const {validateReview, isLoggedIn} = require('../middleware')
 
-router.post('/products/:id/review', async (req,res)=>{
+router.post('/products/:id/review', isLoggedIn,  async (req,res)=>{
     try{
         let {rating, comment} = req.body;
         let {id} = req.params;

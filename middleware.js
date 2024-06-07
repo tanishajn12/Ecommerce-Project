@@ -21,4 +21,15 @@ const validateReview = (req,res,next) =>{
     next();
 }
 
-module.exports = {validateProduct, validateReview}
+//middleware to ensure that only logged in user can perform the app functionality
+const isLoggedIn = (req,res,next)=>{
+    //this means user is not logged in -> log in first
+    if(!req.isAuthenticated()){
+        req.flash('error', 'Login In First');
+        return res.redirect('/login');
+    }
+    next();
+
+}
+
+module.exports = {validateProduct, validateReview, isLoggedIn}
