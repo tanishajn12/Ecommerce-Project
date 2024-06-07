@@ -3,11 +3,12 @@ const app = express();
 const path = require("path");
 const mongoose = require('mongoose');
 const seedDB = require('./seed');
-const productRoutes = require("./routes/product");
 const methodOverride=require('method-override');
-const reviewRoutes = require("./routes/review");
 const session = require("express-session");
 const flash = require("connect-flash");
+const reviewRoutes = require("./routes/review");
+const productRoutes = require("./routes/product");
+const authRoutes = require("./routes/auth");
 
 mongoose.connect('mongodb://127.0.0.1:27017/ecomm') //returns a promise
 .then(()=>{console.log("DB connected")})
@@ -46,6 +47,7 @@ app.use((req,res,next)=>{
 //Routes
 app.use(productRoutes);
 app.use(reviewRoutes);
+app.use(authRoutes);
 
 // seedDB(); //run only once
 
