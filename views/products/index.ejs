@@ -15,12 +15,15 @@
                   <h3 class="card-title"> <%= item.name %> </h3>
                   <h5 class="card-title"> Rs: <%= item.price %> </h5>
                   <p class="card-text"> <%= item.desc %> </p>
-        
+                  
+                  
                   <a href="/products/<%=item._id%>" class="btn btnn btn-primary">View Product</a>
-                  <a href="/products/<%=item._id%>/edit" class="btn btnn btn-primary">Edit Product</a>
-                  <form action="/products/<%=item.id%>?_method=DELETE" method="POST">
-                    <button class="btn btnn btn-primary" >Delete Product</button>
-                  </form>
+                  <%if(currentUser && currentUser.role === "seller"){%>
+                    <a href="/products/<%=item._id%>/edit" class="btn btnn btn-primary">Edit Product</a>
+                    <form action="/products/<%=item.id%>?_method=DELETE" method="POST">
+                      <button class="btn btnn btn-primary" >Delete Product</button>
+                    </form>
+                  <%}%>
                 </div>
             </div>
         </div>

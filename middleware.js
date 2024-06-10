@@ -1,4 +1,6 @@
-const{productSchema, reviewSchema} = require("./schema")
+const Product = require("./models/Product");
+const { productSchema } = require("./schema");
+const { reviewSchema } = require("./schema");
 
 
 const validateProduct = (req,res,next)=> {
@@ -32,4 +34,33 @@ const isLoggedIn = (req,res,next)=>{
 
 }
 
-module.exports = {validateProduct, validateReview, isLoggedIn}
+const isSeller = (req,res,next)=>{
+    if(!req.user.role){
+        req.flash('error', 'Permissions Denied');
+        return res.redirect('/products');
+    }
+    else if(req.user.role !== "seller"){
+        req.flash('error', 'Permissions Denied');
+        return res.redirect('/products');
+    }
+
+    next();
+
+}
+
+const isProductAuthor = async(req,res,next)=>{
+    let {id} = req.params; //product id access
+    let product = await Product.findById(id);
+    // console.log(product.author, 'author'); //object id
+    // console.log(req.user,'user');  //object id
+    
+    //objects ids cant be compared with == or ===
+    //use .equals method
+    if(!product.author.equals(req.user._id)){
+        req.flash('error', 'Permissions Denied');
+        return res.redirect(`/products/${id}`);
+    }
+    next();
+}
+
+module.exports = {validateProduct, validateReview, isLoggedIn, isSeller,isProductAuthor}
