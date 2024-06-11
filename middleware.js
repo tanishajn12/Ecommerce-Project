@@ -24,14 +24,21 @@ const validateReview = (req,res,next) =>{
 }
 
 //middleware to ensure that only logged in user can perform the app functionality
+
 const isLoggedIn = (req,res,next)=>{
+
+    if(req.xhr && !req.isAuthenticated()){
+        return res.status(401).send('unauthorised');
+        // console.log(req.xhr);//ajax hai ya nhi hai?
+    }
+    
     //this means user is not logged in -> log in first
+
     if(!req.isAuthenticated()){
-        req.flash('error', 'Login In First');
-        return res.redirect('/login');
+        req.flash('error' , 'You need to login first');
+        return res.redirect('/login')
     }
     next();
-
 }
 
 const isSeller = (req,res,next)=>{
