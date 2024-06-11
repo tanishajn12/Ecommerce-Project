@@ -9,6 +9,7 @@ const flash = require("connect-flash");
 const reviewRoutes = require("./routes/review");
 const productRoutes = require("./routes/product");
 const authRoutes = require("./routes/auth");
+const cartRoutes = require("./routes/cart")
 const productApi= require("./routes/api/productapi");
 const passport= require('passport');
 const User = require("./models/User");
@@ -73,6 +74,7 @@ app.use(productRoutes);
 app.use(reviewRoutes);
 app.use(authRoutes);
 app.use(productApi);
+app.use(cartRoutes);
 
 // seedDB(); //run only once
 

@@ -39,7 +39,7 @@
         <% } else{ %>
           <a href="#" class="nav-link text-capitalize">Hello <%=currentUser.username%>
             <a href="/user/cart" class="nav-link"><i class="fas fa-shopping-cart"></i> 
-              <sup><span class="badge bg-danger">2</span></sup>
+              <sup><span class="badge bg-danger"><%=currentUser.cart.length%></span></sup>
           </a>
           <a class="mx-2" href="/logout"><button class="btn btn-outline-info" type="submit">Logout</button></a>
         <% } %>
