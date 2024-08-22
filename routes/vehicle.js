@@ -3,7 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const Vehicle = require('../models/Vehicle');
 const Org = require('../models/Org');
-const { decodeLimiter } = require('../middleware/rateLimiter'); // Middleware to limit requests
+const { decodeLimiter } = require('../middleware'); // Middleware to limit requests
 
 // In-memory cache for storing decoded VIN results
 const cache = {};
@@ -41,6 +41,12 @@ router.get('/decode/:vin', decodeLimiter, async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Error decoding VIN' });
     }
+});
+
+// GET /vehicles/new
+// Displays the form to add a new vehicle
+router.get('/new', (req, res) => {
+    res.render('vehicles/new');
 });
 
 // POST /vehicles
@@ -82,7 +88,7 @@ router.post('/', async (req, res) => {
         await newVehicle.save();
 
         // Respond with the created vehicle's details
-        res.status(201).json(newVehicle);
+        res.redirect(`/vehicles/${vin}`);
     } catch (error) {
         res.status(500).json({ error: 'Error adding vehicle' });
     }
@@ -103,13 +109,73 @@ router.get('/:vin', async (req, res) => {
 
         // Check if the vehicle exists
         if (!vehicle) {
-            return res.status(404).json({ error: 'Vehicle not found' });
+            return res.status(404).render('error', { error: 'Vehicle not found' });
         }
 
         // Respond with the vehicle's details
-        res.json(vehicle);
+        res.render('vehicles/show', { vehicle });
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching vehicle' });
+        res.status(500).render('error', { error: 'Error fetching vehicle' });
+    }
+});
+
+// GET /vehicles/:vin/edit
+// Displays the form to edit an existing vehicle
+router.get('/:vin/edit', async (req, res) => {
+    const vin = req.params.vin;
+
+    // Validate the VIN format
+    if (!/^[A-HJ-NPR-Z0-9]{17}$/.test(vin)) {
+        return res.status(400).render('error', { error: 'Invalid VIN format' });
+    }
+
+    try {
+        const vehicle = await Vehicle.findOne({ vin });
+
+        // Check if the vehicle exists
+        if (!vehicle) {
+            return res.status(404).render('error', { error: 'Vehicle not found' });
+        }
+
+        res.render('vehicles/edit', { vehicle });
+    } catch (error) {
+        res.status(500).render('error', { error: 'Error fetching vehicle' });
+    }
+});
+
+// PATCH /vehicles/:vin
+// Updates an existing vehicle
+router.patch('/:vin', async (req, res) => {
+    const vin = req.params.vin;
+    const { org } = req.body;
+
+    // Validate VIN format
+    if (!/^[A-HJ-NPR-Z0-9]{17}$/.test(vin)) {
+        return res.status(400).json({ error: 'Invalid VIN format' });
+    }
+
+    // Validate organization ID
+    const organization = await Org.findById(org);
+    if (!organization) {
+        return res.status(400).json({ error: 'Invalid organization ID' });
+    }
+
+    try {
+        const updatedVehicle = await Vehicle.findOneAndUpdate(
+            { vin },
+            { org: organization._id },
+            { new: true }
+        );
+
+        // Check if the vehicle exists
+        if (!updatedVehicle) {
+            return res.status(404).json({ error: 'Vehicle not found' });
+        }
+
+        // Redirect to the vehicle's details page
+        res.redirect(`/vehicles/${vin}`);
+    } catch (error) {
+        res.status(500).json({ error: 'Error updating vehicle' });
     }
 });
 

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Vehicles</title>
+</head>
+<body>
+    <h1>All Vehicles</h1>
+    <a href="/vehicles/new">Add New Vehicle</a>
+    <ul>
+        <% vehicles.forEach(vehicle => { %>
+            <li>
+                <a href="/vehicles/<%= vehicle.vin %>"><%= vehicle.vin %></a> - <%= vehicle.org %>
+            </li>
+        <% }) %>
+    </ul>
+    <a href="/">Back to Home</a>
+</body>
+</html>

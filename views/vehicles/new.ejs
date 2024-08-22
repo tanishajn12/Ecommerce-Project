@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Vehicle</title>
+</head>
+<body>
+    <h1>Add New Vehicle</h1>
+    <form action="/vehicles" method="POST">
+        <label for="vin">VIN:</label>
+        <input type="text" id="vin" name="vin" required pattern="[A-HJ-NPR-Z0-9]{17}" maxlength="17">
+        <br><br>
+        <label for="org">Organization ID:</label>
+        <input type="text" id="org" name="org" required>
+        <br><br>
+        <button type="submit">Add Vehicle</button>
+    </form>
+    <a href="/">Back to Home</a>
+</body>
+</html>
