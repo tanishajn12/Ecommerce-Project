@@ -1,38 +1,34 @@
-const mongoose = require("mongoose");
-const Product = require("./models/Product");
+const mongoose = require('mongoose');
+const axios = require('axios');
+const Vehicle = require('./models/Vehicle');
+const Org = require('./models/Org');
 
-const products = [
-    {
-        name : "Iphone 15 Pro",
-        img : "https://images.unsplash.com/photo-1710023038502-ba80a70a9f53?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        price : 125000,
-        desc : "Amazing camera & outstanding performance"
-    },
-    {
-        name : "macbook pro",
-        img : "https://images.unsplash.com/photo-1651241680016-cc9e407e7dc3?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        price : 230000,
-        desc: "hello i am a good machine"
-    },
-    {
-        name : "apple watch",
-        img :"https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        price : 50000,
-        desc: "compatible device"
-    },
-    {
-        name : "ipad",
-        img :"https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=2015&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        price : 80000,
-        desc: "Very useful for students to study"
+mongoose.connect('mongodb://127.0.0.1:27017/moreTorque')
+    .then(() => console.log('Database connected'))
+    .catch(err => console.error('Database connection error:', err));
+
+const seedVehicles = async () => {
+    try {
+        const vins = ['1HGCM82633A123456', '1FTFW1ET6EKF12345']; // Example VINs
+        for (let vin of vins) {
+            const response = await axios.get(`https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVin/${vin}?format=json`);
+            const { Results } = response.data;
+
+            const vehicleDetails = {
+                vin,
+                manufacturer: Results.find(r => r.Variable === 'Manufacturer Name')?.Value,
+                model: Results.find(r => r.Variable === 'Model')?.Value,
+                year: Results.find(r => r.Variable === 'Model Year')?.Value,
+                org: 'YOUR_ORG_ID_HERE' // Replace with an actual org ID
+            };
+
+            const vehicle = new Vehicle(vehicleDetails);
+            await vehicle.save();
+            console.log(`Vehicle ${vin} saved to database`);
+        }
+    } catch (error) {
+        console.error('Error seeding data:', error);
     }
+};
 
-]
-
-async function seedDB() {
-    await Product.insertMany(products);
-    console.log("DB seeded")
-
-}
-
-module.exports=seedDB;
+seedVehicles().then(() => mongoose.disconnect());
