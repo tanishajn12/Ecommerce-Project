@@ -12,8 +12,9 @@ const orgSchema = new mongoose.Schema({
     default: 1000 
   },
   speedLimitPolicy: Number,
-  
+
   parentOrg: { type: mongoose.Schema.Types.ObjectId, ref: 'Org' },
+  
   childrenOrgs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Org' }],
 });
 
